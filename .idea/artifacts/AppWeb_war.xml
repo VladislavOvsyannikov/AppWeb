@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="AppWeb:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="AppWeb-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="AppWeb:war exploded" />
+    </root>
+  </artifact>
+</component>
