@@ -1,20 +1,14 @@
 package system.controller;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import system.model.OrderEntity;
-import system.model.ProductEntity;
-import system.service.HibernateSessionFactory;
-import system.service.OrderService;
-import system.service.ProductService;
+import system.model.Product;
+import system.model.ProductInOrder;
+import system.service.ShopManager;
+import system.service.ShopService;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,103 +18,106 @@ import java.util.List;
 public class ShopController {
 
     @Autowired
-    private ProductService productService;
+    private ShopService shopService;
 
     @Autowired
-    private OrderService orderService;
+    private ShopManager shopManager;
 
-    private  ArrayList<ProductEntity> searchRes;
+//    private List<Product> searchRes;
 
     @RequestMapping(value = "/product", method = RequestMethod.GET)
     public ModelAndView shopProduct(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("products", productService.getProducts());
-        modelAndView.addObject("productFromServer", new ProductEntity());
+        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("productFromServer", new Product());
         modelAndView.setViewName("shop_product_page");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/order", method = RequestMethod.GET)
-    public ModelAndView shopOrder(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("orders", orderService.getOrders());
-        modelAndView.addObject("orderFromServer", new OrderEntity());
-        modelAndView.setViewName("shop_order_page");
         return modelAndView;
     }
 
     @RequestMapping(value = "/product", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView addProductInOrder(@ModelAttribute("productFromServer") ProductEntity product) {
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setName(product.getName());
-        orderEntity.setPrice(product.getPrice());
-        orderEntity.setKind(product.getKind());
-        orderEntity.setAvailability(product.getAvailability());
-        session.save(orderEntity);
-        session.getTransaction().commit();
-        session.close();
-
+    public  @ResponseBody ModelAndView addProductInOrder(@ModelAttribute("productFromServer") Product product){
+        shopManager.addProductInOrder(product);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("products", productService.getProducts());
-        modelAndView.addObject("productFromServer", new ProductEntity());
-        modelAndView.setViewName("shop_product_page");
+//        modelAndView.addObject("types", shopService.getTypes());
+//        modelAndView.addObject("productFromServer", new Product());
+//        modelAndView.setViewName("shop_product_page");
+        modelAndView.addObject("basket", shopService.getLastBasket());
+        modelAndView.addObject("productInOrderFromServer", new ProductInOrder());
+        modelAndView.setViewName("shop_basket_page");
         return modelAndView;
     }
 
-    @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView deleteProductInOrder(@ModelAttribute("orderFromServer") OrderEntity order) {
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.delete(order);
-        session.getTransaction().commit();
-        session.close();
-
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public ModelAndView add(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("orders", orderService.getOrders());
-        modelAndView.addObject("orderFromServer", new OrderEntity());
-        modelAndView.setViewName("shop_order_page");
+        modelAndView.addObject("product", new Product());
+        modelAndView.setViewName("shop_add_page");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView addProduct(@ModelAttribute("product") Product product){
+        shopManager.addProduct(product);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("product", new Product());
+        modelAndView.setViewName("shop_add_page");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/basket", method = RequestMethod.GET)
+    public ModelAndView shopOrder(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("basket", shopService.getLastBasket());
+        modelAndView.addObject("productInOrderFromServer", new ProductInOrder());
+        modelAndView.setViewName("shop_basket_page");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/basket", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView deleteProductInOrder(@ModelAttribute("productInOrderFromServer") ProductInOrder productInOrder){
+        shopManager.deleteProductInOrder(productInOrder);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("basket", shopService.getLastBasket());
+        modelAndView.addObject("productInOrderFromServer", new ProductInOrder());
+        modelAndView.setViewName("shop_basket_page");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    public ModelAndView history(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("baskets", shopService.getBaskets());
+        modelAndView.setViewName("shop_history_page");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/history", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView confirmBasket(){
+        shopManager.confirmBasket();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("baskets", shopService.getBaskets());
+        modelAndView.setViewName("shop_history_page");
         return modelAndView;
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView shopSearch(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("searchFromServer", new ProductEntity());
-        modelAndView.addObject("res", searchRes);
+        modelAndView.addObject("searchFromServer", new Product());
+        modelAndView.addObject("productFromServer", new Product());
+        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("res", new ArrayList<Product>());
         modelAndView.setViewName("shop_search_page");
         return modelAndView;
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView searchProduct(@ModelAttribute("searchFromServer") ProductEntity product) {
-        String name = product.getName();
-        int price = product.getPrice();
-        String kind = product.getKind();
-        String availability = product.getAvailability();
-
-        String[] str = {name, Integer.toString(price), kind, availability};
-        List products = productService.getProducts();
-        searchRes = new ArrayList<ProductEntity>();
-
-        if (!str[0].equals("") || !str[1].equals("0") || !str[2].equals("") || !str[3].equals("")) {
-            for (int j = 0; j < products.size(); j++) {
-                ProductEntity prod = (ProductEntity) products.get(j);
-                String[] str1 = {prod.getName(), Integer.toString(prod.getPrice()), prod.getKind(), prod.getAvailability()};
-                int k = 0;
-                for (int i = 0; i < str.length; i++) {
-                    if (str[i].equals("") || str[i].equals("0")) {
-                        k++;
-                    } else if (str[i].equals(str1[i])) {
-                        k++;
-                    }
-                }
-                if (k == str.length) searchRes.add(prod);
-            }
-        }
+    public @ResponseBody ModelAndView searchProduct(@ModelAttribute("searchFromServer") Product product) {
+        List<Product> searchRes = shopManager.searchProduct(product);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("searchFromServer", new ProductEntity());
+        modelAndView.addObject("searchFromServer", new Product());
+        modelAndView.addObject("productFromServer", new Product());
+        modelAndView.addObject("types", shopService.getTypes());
         modelAndView.addObject("res", searchRes);
         modelAndView.setViewName("shop_search_page");
         return modelAndView;

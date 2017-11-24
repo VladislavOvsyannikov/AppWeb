@@ -8,6 +8,6 @@
 <br>
 <a href="http://localhost:8080/shop/product">Список продуктов</a><br>
 <a href="http://localhost:8080/shop/search">Поиск</a><br>
-<a href="http://localhost:8080/shop/order">Корзина</a>
+<a href="http://localhost:8080/shop/basket">Корзина</a>
 </body>
 </html>
