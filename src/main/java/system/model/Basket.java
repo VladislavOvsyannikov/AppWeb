@@ -19,6 +19,18 @@ public class Basket {
     @OneToMany(mappedBy = "basket", fetch = FetchType.EAGER)
     private List<ProductInOrder> productInOrder;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public int getId() {
         return id;
     }

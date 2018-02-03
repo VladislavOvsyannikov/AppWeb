@@ -8,6 +8,22 @@
 </head>
 <body>
 <h2>Интернет-магазин товаров для животных</h2>
+<h3>Навигация: </h3>
+<a href="http://localhost:8080/shop/product">Главная</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/search">Поиск товара</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/basket">Корзина</a>
+
+<h3>Авторизация:</h3>
+<c:if test="${userName=='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/registration">Регистрация</a>
+<p></c:if>
+<c:if test="${userName!='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/shop/history">История заказов</a>
+<p></c:if>
 <h3>Корзина: </h3>
 <style type="text/css">
     TABLE {
@@ -29,9 +45,9 @@
 <p></c:if>
 
 <c:if test="${!empty basket.productInOrder}"><p>
-<c:if test="${basket.status=='1'}"><p>
-<h3>Нет товаров в корзине</h3>
-<p></c:if>
+    <c:if test="${basket.status=='1'}"><p>
+        <h3>Нет товаров в корзине</h3>
+    <p></c:if>
 
 <c:if test="${basket.status=='0'}"><p>
 
@@ -63,8 +79,5 @@
     </table>
     <p></c:if><p>
     </c:if>
-    <br>
-    <a href="http://localhost:8080/shop/product">Список продуктов</a><br>
-    <a href="http://localhost:8080/shop/search">Поиск</a>
 </body>
 </html>

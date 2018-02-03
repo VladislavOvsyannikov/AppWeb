@@ -16,5 +16,15 @@
         <spring:input path="stock.address"/> Название склада <br>
         <spring:button>Добавить</spring:button>
     </spring:form>
+
+    <br>
+    <br>
+
+    <spring:form method="post" action="/shop/generate">
+        <input type="submit" value="Generate"/>
+    </spring:form>
+
+
+
 </body>
 </html>

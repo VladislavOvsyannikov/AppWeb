@@ -7,6 +7,23 @@
 </head>
 <body>
 <h2>Интернет-магазин товаров для животных</h2>
+<h3>Навигация: </h3>
+<a href="http://localhost:8080/shop/product">Главная</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/search">Поиск товара</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/basket">Корзина</a>
+
+<h3>Авторизация:</h3>
+<c:if test="${userName=='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/registration">Регистрация</a>
+<p></c:if>
+<c:if test="${userName!='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/shop/history">История заказов</a>
+<p></c:if>
+
 <h3>Список доступных товаров: </h3>
 <script>
     var show;
@@ -67,11 +84,5 @@
     </div>
     </div>
 </c:forEach>
-
-<br>
-<a href="http://localhost:8080/shop/basket">Корзина</a> <br>
-<a href="http://localhost:8080/shop/search">Поиск</a> <br>
-<a href="http://localhost:8080/shop/add">Добавление товара в список товаров</a> <br>
-<a href="http://localhost:8080/shop/history">История заказов</a>
 </body>
 </html>

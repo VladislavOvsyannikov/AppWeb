@@ -15,17 +15,36 @@
     TH {  background: #b0e0e6;  }
 </style>
     <h2>Интернет-магазин товаров для животных</h2>
+<h3>Навигация: </h3>
+<a href="http://localhost:8080/shop/product">Главная</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/search">Поиск товара</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/basket">Корзина</a>
+
+<h3>Авторизация:</h3>
+<c:if test="${userName=='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/registration">Регистрация</a>
+<p></c:if>
+<c:if test="${userName!='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/logout">Выход</a>
+<p></c:if>
     <h3>Поиск товара по параметрам:</h3>
     <spring:form modelAttribute="searchFromServer" method="post" action="/shop/search">
+        Тип товара <br>
         <spring:select path="type.name">
                 <option>-</option>
             <c:forEach items="${types}" var="t">
                 <option>${t.name}</option>
             </c:forEach>
-        </spring:select> Тип товара <br>
-        <spring:input path="name" /> Название <br>
-        <spring:input path="price" /> Цена (<=)<br>
-        <spring:input path="quantity" /> Количество (>=) <br>
+        </spring:select><br>
+        Название<br>
+        <spring:input path="name" /> <br>
+        Цена (<=)<br>
+        <spring:input path="price" /> <br>
+        Количество (>=)<br>
+        <spring:input path="quantity" />  <br><br>
         <spring:button>Поиск</spring:button>
     </spring:form>
 
@@ -66,9 +85,5 @@
     </table>
     <p>
     </c:if>
-
-    <br><a href="http://localhost:8080/shop/product">Список продуктов</a>
-        <br><a href="http://localhost:8080/shop/basket">Корзина</a>
-
 </body>
 </html>

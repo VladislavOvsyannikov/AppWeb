@@ -26,6 +26,9 @@ public class ShopService {
     @Autowired
     private ProductInOrderDao productInOrderDao;
 
+    @Autowired
+    private UserDao userDao;
+
 
     public List getProducts(){
         return productDao.getProducts();
@@ -49,5 +52,9 @@ public class ShopService {
 
     public List getProductsInOrders(){
         return productInOrderDao.getProductsInOrders();
+    }
+
+    public List getUsers(){
+        return userDao.getUsers();
     }
 }

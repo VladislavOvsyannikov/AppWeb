@@ -3,6 +3,9 @@ package system.service;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import system.model.*;
 
@@ -55,36 +58,58 @@ public class ShopManager {
         session.close();
     }
 
+    @Secured("ROLE_USER")
     public void addProductInOrder(Product product){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
         Query query;
-
-        Basket basket = shopService.getLastBasket();
 
         query = session.createQuery("from Product where id=:n2");
         query.setParameter("n2", product.getId());
         Product product1 = (Product) query.list().get(0);
         product1.setQuantity(product1.getQuantity()-1);
 
-        ProductInOrder productInOrder = new ProductInOrder();;
-        if(basket.getStatus().equals("0")){
-            productInOrder.setBasket(basket);
-            productInOrder.setProduct(product1);
-            session.save(productInOrder);
-        }else{
+        User user;
+        String userName = getUserName();
+        query = session.createQuery("from User where name=:n");
+        query.setParameter("n", userName);
+        user = (User) query.list().get(0);
+
+        List<Basket> baskets = user.getBasket();
+        ProductInOrder productInOrder = new ProductInOrder();
+        if (!baskets.isEmpty()) {
+            Basket basket = baskets.get(0);
+            for (Basket b : baskets) {
+                if (b.getId() > basket.getId()) basket = b;
+            }
+            if (basket.getStatus().equals("0")) {
+                productInOrder.setBasket(basket);
+                productInOrder.setProduct(product1);
+                session.save(productInOrder);
+            } else {
+                Basket basket1 = new Basket();
+                basket1.setStatus("0");
+                basket1.setUser(user);
+                session.save(basket1);
+                productInOrder.setBasket(basket1);
+                productInOrder.setProduct(product1);
+                session.save(productInOrder);
+            }
+        }
+        if (baskets.isEmpty()) {
             Basket basket1 = new Basket();
             basket1.setStatus("0");
+            basket1.setUser(user);
             session.save(basket1);
             productInOrder.setBasket(basket1);
             productInOrder.setProduct(product1);
             session.save(productInOrder);
         }
-
         session.getTransaction().commit();
         session.close();
     }
 
+    @Secured("ROLE_USER")
     public void deleteProductInOrder(ProductInOrder productInOrder){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
@@ -98,11 +123,12 @@ public class ShopManager {
         session.close();
     }
 
+    @Secured("ROLE_USER")
     public void confirmBasket(){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
         Query query;
-        Basket basket = shopService.getLastBasket();
+        Basket basket = getLastUserBasket();
         query = session.createQuery("update Basket set status=:n1 where id=:n2");
         query.setParameter("n1", "1");
         query.setParameter("n2", basket.getId());
@@ -156,5 +182,63 @@ public class ShopManager {
         session.getTransaction().commit();
         session.close();
         return products;
+    }
+
+    //добавить проверку на совпадение
+    public void addUser(User user){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        User user1 = new User();
+        user1.setName(user.getName());
+        user1.setPassword(user.getPassword());
+        user1.setRole("ROLE_USER");
+        session.save(user1);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public String getUserName(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser")){
+            return "Гость";
+        }else return auth.getName();
+    }
+
+    public Basket getLastUserBasket(){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        User user;
+        String userName = getUserName();
+        query = session.createQuery("from User where name=:n");
+        query.setParameter("n", userName);
+        user = (User) query.list().get(0);
+
+        List<Basket> baskets = user.getBasket();
+        Basket basket=null;
+        if (!baskets.isEmpty()) {
+            basket = baskets.get(0);
+            for (Basket b : baskets) {
+                if (b.getId() > basket.getId()) basket = b;
+            }
+        }
+        return basket;
+    }
+
+    public List<Basket> getUserBaskets(){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        User user;
+        String userName = getUserName();
+        query = session.createQuery("from User where name=:n");
+        query.setParameter("n", userName);
+        user = (User) query.list().get(0);
+
+        return user.getBasket();
     }
 }

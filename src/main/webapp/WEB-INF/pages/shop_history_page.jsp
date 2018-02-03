@@ -7,6 +7,21 @@
 </head>
 <body>
 <h2>Интернет-магазин товаров для животных</h2>
+<h3>Навигация: </h3>
+<a href="http://localhost:8080/shop/product">Главная</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/search">Поиск товара</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/basket">Корзина</a>
+
+<h3>Авторизация:</h3>
+<c:if test="${userName=='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/registration">Регистрация</a>
+<p></c:if>
+<c:if test="${userName!='Гость'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/logout">Выход</a>
+<p></c:if>
 <h3>История заказов: </h3>
 <script>
     var show;
@@ -61,8 +76,5 @@
 <p>
     </c:if>
     </c:forEach>
-    <br>
-    <a href="http://localhost:8080/shop/product">Список продуктов</a>
-    <br>
 </body>
 </html>
