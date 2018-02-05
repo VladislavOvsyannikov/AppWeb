@@ -8,11 +8,12 @@
 
     <http auto-config="true" use-expressions="true" access-denied-page="/login">
         <intercept-url pattern="/shop/history" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/shop/product2" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/shop/basket" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/shop/add" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/shop/admin" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/shop/admin/**" access="hasRole('ROLE_ADMIN')"/>
         <form-login login-page="/login" default-target-url="/shop/product" authentication-failure-url="/error403"/>
         <logout logout-url="/logout" logout-success-url="/shop/product"/>
-
         <!--<anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>-->
         <!--<remember-me/>-->
     </http>

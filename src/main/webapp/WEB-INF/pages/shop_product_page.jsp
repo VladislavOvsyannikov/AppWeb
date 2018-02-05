@@ -18,10 +18,16 @@
     <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
     <a href="http://localhost:8080/registration">Регистрация</a>
 <p></c:if>
-<c:if test="${userName!='Гость'}"><p>
+<c:if test="${userName!='Гость' && userName!='admin'}"><p>
     Вы вошли как <c>${userName}</c>.&emsp;&emsp;
     <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
     <a href="http://localhost:8080/shop/history">История заказов</a>
+<p></c:if>
+<c:if test="${userName=='admin'}"><p>
+    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+    <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
+    <a href="http://localhost:8080/shop/history">История заказов</a>&emsp;&emsp;
+    <a href="http://localhost:8080/shop/admin">Администрирование</a>
 <p></c:if>
 
 <h3>Список доступных товаров: </h3>
@@ -69,7 +75,7 @@
                 <c:if test="${product.quantity!='0'}"><p>
                     <td>${product.quantity}</td>
                     <td>
-                        <spring:form modelAttribute="productFromServer" method="post" action="/shop/product">
+                        <spring:form modelAttribute="productFromServer" method="post" action="/shop/product2">
                             <spring:hidden path="id" value="${product.id}"/>
                             <spring:button>Добавить в корзину</spring:button>
                         </spring:form>

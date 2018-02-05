@@ -44,9 +44,10 @@ public class UserController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public @ResponseBody ModelAndView shopRegistration(@ModelAttribute("user") User user){
-        shopManager.addUser(user);
+        boolean reg = shopManager.addUser(user);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
+        if (reg) modelAndView.setViewName("login");
+        else modelAndView.setViewName("errorReg");
         return modelAndView;
     }
 

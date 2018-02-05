@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import system.model.Product;
 import system.model.ProductInOrder;
-import system.model.Type;
-import system.model.User;
-import system.service.Provider;
 import system.service.ShopManager;
 import system.service.ShopService;
 
@@ -38,7 +35,7 @@ public class ShopController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/product", method = RequestMethod.POST)
+    @RequestMapping(value = "/product2", method = RequestMethod.POST)
     public  @ResponseBody ModelAndView addProductInOrder(@ModelAttribute("productFromServer") Product product){
         shopManager.addProductInOrder(product);
         ModelAndView modelAndView = new ModelAndView();
@@ -114,34 +111,6 @@ public class ShopController {
         modelAndView.addObject("res", searchRes);
         modelAndView.addObject("userName", shopManager.getUserName());
         modelAndView.setViewName("shop_search_page");
-        return modelAndView;
-    }
-
-
-
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView add(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("shop_add_page");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView addProduct(@ModelAttribute("product") Product product){
-        shopManager.addProduct(product);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("shop_add_page");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/generate", method = RequestMethod.POST)
-    public ModelAndView generateProduct(){
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("shop_add_page");
         return modelAndView;
     }
 }

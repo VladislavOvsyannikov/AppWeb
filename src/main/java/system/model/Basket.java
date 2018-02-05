@@ -16,6 +16,9 @@ public class Basket {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "status2", nullable = true)
+    private String status2;
+
     @OneToMany(mappedBy = "basket", fetch = FetchType.EAGER)
     private List<ProductInOrder> productInOrder;
 
@@ -45,6 +48,14 @@ public class Basket {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatus2() {
+        return status2;
+    }
+
+    public void setStatus2(String status2) {
+        this.status2 = status2;
     }
 
     public List<ProductInOrder> getProductInOrder() {

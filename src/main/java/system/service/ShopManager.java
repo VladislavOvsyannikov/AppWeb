@@ -3,7 +3,6 @@ package system.service;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class ShopManager {
         session.close();
     }
 
-    @Secured("ROLE_USER")
+//    @Secured("ROLE_USER")
     public void addProductInOrder(Product product){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
@@ -109,7 +108,7 @@ public class ShopManager {
         session.close();
     }
 
-    @Secured("ROLE_USER")
+//    @Secured("ROLE_USER")
     public void deleteProductInOrder(ProductInOrder productInOrder){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
@@ -123,16 +122,23 @@ public class ShopManager {
         session.close();
     }
 
-    @Secured("ROLE_USER")
+//    @Secured("ROLE_USER")
     public void confirmBasket(){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
         Query query;
         Basket basket = getLastUserBasket();
+
         query = session.createQuery("update Basket set status=:n1 where id=:n2");
         query.setParameter("n1", "1");
         query.setParameter("n2", basket.getId());
         query.executeUpdate();
+
+        query = session.createQuery("update Basket set status2=:n3 where id=:n4");
+        query.setParameter("n3", "0");
+        query.setParameter("n4", basket.getId());
+        query.executeUpdate();
+
         session.getTransaction().commit();
         session.close();
     }
@@ -184,19 +190,30 @@ public class ShopManager {
         return products;
     }
 
-    //добавить проверку на совпадение
-    public void addUser(User user){
+    public boolean addUser(User user){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
-
-        User user1 = new User();
-        user1.setName(user.getName());
-        user1.setPassword(user.getPassword());
-        user1.setRole("ROLE_USER");
-        session.save(user1);
-
+        Query query = session.createQuery("from User where name=:n2");
+        query.setParameter("n2", user.getName());
+        List<User> users = query.list();
         session.getTransaction().commit();
         session.close();
+
+        if (!user.getName().equals("") && !user.getPassword().equals("") && users.isEmpty()) {
+            session = HibernateSessionFactory.getSessionFactory().openSession();
+            session.beginTransaction();
+
+            User user1 = new User();
+            user1.setName(user.getName());
+            user1.setPassword(user.getPassword());
+            user1.setRole("ROLE_USER");
+            session.save(user1);
+
+            session.getTransaction().commit();
+            session.close();
+            return true;
+        }
+        return false;
     }
 
     public String getUserName(){
@@ -240,5 +257,33 @@ public class ShopManager {
         user = (User) query.list().get(0);
 
         return user.getBasket();
+    }
+
+    public void adminConfirm(Basket basket){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        query = session.createQuery("update Basket set status2=:n1 where id=:n2");
+        query.setParameter("n1", "1");
+        query.setParameter("n2", basket.getId());
+        query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public void adminConfirm2(Basket basket){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        query = session.createQuery("update Basket set status2=:n1 where id=:n2");
+        query.setParameter("n1", "2");
+        query.setParameter("n2", basket.getId());
+        query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
     }
 }
