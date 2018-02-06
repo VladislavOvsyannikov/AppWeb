@@ -3,6 +3,7 @@ package system.service;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -84,11 +85,13 @@ public class ShopManager {
             if (basket.getStatus().equals("0")) {
                 productInOrder.setBasket(basket);
                 productInOrder.setProduct(product1);
+                basket.setCost(basket.getCost() + product1.getPrice());
                 session.save(productInOrder);
             } else {
                 Basket basket1 = new Basket();
                 basket1.setStatus("0");
                 basket1.setUser(user);
+                basket1.setCost(product1.getPrice());
                 session.save(basket1);
                 productInOrder.setBasket(basket1);
                 productInOrder.setProduct(product1);
@@ -99,6 +102,7 @@ public class ShopManager {
             Basket basket1 = new Basket();
             basket1.setStatus("0");
             basket1.setUser(user);
+            basket1.setCost(product1.getPrice());
             session.save(basket1);
             productInOrder.setBasket(basket1);
             productInOrder.setProduct(product1);
@@ -117,6 +121,12 @@ public class ShopManager {
         query.setParameter("n", productInOrder.getId());
         ProductInOrder productInOrder1 = (ProductInOrder) query.list().get(0);
         productInOrder1.getProduct().setQuantity(productInOrder1.getProduct().getQuantity()+1);
+        productInOrder1.getBasket().setCost(productInOrder1.getBasket().getCost() -
+                                            productInOrder1.getProduct().getPrice());
+
+        Basket basket = productInOrder1.getBasket();
+        basket.getProductInOrder().remove(productInOrder1);
+
         session.delete(productInOrder1);
         session.getTransaction().commit();
         session.close();
@@ -269,6 +279,13 @@ public class ShopManager {
         query.setParameter("n2", basket.getId());
         query.executeUpdate();
 
+        query = session.createQuery("from Basket where id=:n");
+        query.setParameter("n", basket.getId());
+        Basket basket1 = (Basket) query.list().get(0);
+        for (ProductInOrder p:basket1.getProductInOrder()){
+            p.getProduct().setQuantity(p.getProduct().getQuantity()+1);
+        }
+
         session.getTransaction().commit();
         session.close();
     }
@@ -282,6 +299,43 @@ public class ShopManager {
         query.setParameter("n1", "2");
         query.setParameter("n2", basket.getId());
         query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public void deleteUser(User user){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        query = session.createQuery("from User where id=:n");
+        query.setParameter("n", user.getId());
+        User user1 = (User) query.list().get(0);
+        session.delete(user1);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public int numberOfOrdersForConfirm(){
+        List<Basket> baskets = shopService.getBaskets();
+        int count=0;
+        for (Basket b:baskets){
+            if (b.getStatus2().equals("0")) count++;
+        }
+        return count;
+    }
+
+    public void changeProduct(Product product){
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query query;
+
+        query = session.createQuery("from Product where id=:n");
+        query.setParameter("n", product.getId());
+        Product product1 = (Product) query.list().get(0);
+        product1.setQuantity(product.getQuantity());
 
         session.getTransaction().commit();
         session.close();

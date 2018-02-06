@@ -19,8 +19,11 @@
     <a href="http://localhost:8080/login">Вход</a>&emsp;&emsp;
     <a href="http://localhost:8080/registration">Регистрация</a>
 <p></c:if>
-<c:if test="${userName!='Гость'}"><p>
-    Вы вошли как <c>${userName}</c>.&emsp;&emsp;
+<c:if test="${userName!='Гость'}">
+<p>
+    Вы вошли как
+    <c>${userName}</c>
+    .&emsp;&emsp;
     <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
     <a href="http://localhost:8080/shop/history">История заказов</a>
 <p></c:if>
@@ -45,14 +48,14 @@
 <p></c:if>
 
 <c:if test="${!empty basket.productInOrder}"><p>
-    <c:if test="${basket.status=='1'}"><p>
-        <h3>Нет товаров в корзине</h3>
-    <p></c:if>
+<c:if test="${basket.status=='1'}"><p>
+<h3>Нет товаров в корзине</h3>
+<p></c:if>
 
 <c:if test="${basket.status=='0'}"><p>
 
     <form:form method="post" action="/shop/history">
-        <input type="submit" value="Подтвердить заказ"/>
+    <input type="submit" value="Подтвердить заказ"/>
     </form:form>
 
     <table>
@@ -77,7 +80,14 @@
             </tr>
         </c:forEach>
     </table>
-    <p></c:if><p>
+    <p></c:if>
+<p>
+    </c:if>
+    <c:if test="${!empty basket.productInOrder}">
+    <c:if test="${basket.status!='1'}">
+    <br> Общая стоимость:
+    <c>${basket.cost}</c>
+    </c:if>
     </c:if>
 </body>
 </html>

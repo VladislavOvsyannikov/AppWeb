@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import system.model.Basket;
 import system.model.Product;
+import system.model.User;
 import system.service.ShopManager;
 import system.service.ShopService;
 
@@ -25,6 +26,7 @@ public class AdminController {
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public ModelAndView admin(){
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("number", shopManager.numberOfOrdersForConfirm());
         modelAndView.setViewName("admin");
         return modelAndView;
     }
@@ -75,6 +77,43 @@ public class AdminController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/admin/change", method = RequestMethod.GET)
+    public ModelAndView change(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("prod", new Product());
+        modelAndView.setViewName("admin_change");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/change", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView changeProduct(@ModelAttribute("prod") Product product){
+        shopManager.changeProduct(product);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("prod", new Product());
+        modelAndView.setViewName("admin_change");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
+    public ModelAndView users(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("users", shopService.getUsers());
+        modelAndView.addObject("user", new User());
+        modelAndView.setViewName("admin_users");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/admin/users", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView userDelete(@ModelAttribute("user") User user){
+        shopManager.deleteUser(user);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("users", shopService.getUsers());
+        modelAndView.addObject("user", new User());
+        modelAndView.setViewName("admin_users");
+        return modelAndView;
+    }
 
 //    @RequestMapping(value = "/generate", method = RequestMethod.POST)
 //    public ModelAndView generateProduct(){

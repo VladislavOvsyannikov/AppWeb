@@ -19,7 +19,10 @@ public class Basket {
     @Column(name = "status2", nullable = true)
     private String status2;
 
-    @OneToMany(mappedBy = "basket", fetch = FetchType.EAGER)
+    @Column(name = "cost", nullable = false)
+    private int cost;
+
+    @OneToMany(mappedBy = "basket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ProductInOrder> productInOrder;
 
     @ManyToOne
@@ -56,6 +59,14 @@ public class Basket {
 
     public void setStatus2(String status2) {
         this.status2 = status2;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     public List<ProductInOrder> getProductInOrder() {

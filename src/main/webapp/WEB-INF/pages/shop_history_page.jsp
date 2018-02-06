@@ -72,6 +72,8 @@
                 </tr>
             </c:forEach>
         </table>
+        Общая стоимость: ${basket.cost}
+        <br><br>
     </div>
 </div>
 

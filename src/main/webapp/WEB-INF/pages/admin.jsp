@@ -12,8 +12,9 @@
 
 <h3>Администрирование:</h3>
 <a href="http://localhost:8080/shop/admin/add">Добавить товар</a>&emsp;&emsp;
-<a href="http://localhost:8080/shop/admin/change">Изменить параметры товара</a>&emsp;&emsp;
-<a href="http://localhost:8080/shop/admin/confirm">Обработать заказ</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/admin/change">Изменить количество товара</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/admin/confirm">Обработать заказ(<c>${number}</c>)</a>&emsp;&emsp;
+<a href="http://localhost:8080/shop/admin/users">Пользователи</a>&emsp;&emsp;
 
 </body>
 </html>

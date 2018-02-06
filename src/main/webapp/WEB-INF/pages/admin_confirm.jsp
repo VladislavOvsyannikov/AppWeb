@@ -64,6 +64,7 @@
                 </tr>
             </c:forEach>
         </table>
+        Общая стоимость: ${bask.cost}<br>
     </div>
 </div>
 &emsp;Логин заказчика: <c>${bask.user.name}</c><br>

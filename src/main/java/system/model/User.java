@@ -21,7 +21,7 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Basket> basket;
 
     public int getId() {
