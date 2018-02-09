@@ -1,11 +1,9 @@
 package system.dao;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import system.model.Stock;
-import system.model.Type;
 import system.service.HibernateSessionFactory;
 
 import java.util.List;

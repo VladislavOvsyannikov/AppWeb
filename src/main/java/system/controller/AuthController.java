@@ -8,17 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import system.model.User;
-import system.service.ShopManager;
 import system.service.ShopService;
 
 @Controller
-public class UserController {
+public class AuthController {
 
     @Autowired
     private ShopService shopService;
-
-    @Autowired
-    private ShopManager shopManager;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView shopProduct(){
@@ -44,7 +40,7 @@ public class UserController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public @ResponseBody ModelAndView shopRegistration(@ModelAttribute("user") User user){
-        boolean reg = shopManager.addUser(user);
+        boolean reg = shopService.addUser(user);
         ModelAndView modelAndView = new ModelAndView();
         if (reg) modelAndView.setViewName("login");
         else modelAndView.setViewName("errorReg");

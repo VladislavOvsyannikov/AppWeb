@@ -16,7 +16,7 @@ public class Basket {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "status2", nullable = true)
+    @Column(name = "status2")
     private String status2;
 
     @Column(name = "cost", nullable = false)
@@ -26,7 +26,7 @@ public class Basket {
     private List<ProductInOrder> productInOrder;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public User getUser() {
