@@ -2,20 +2,19 @@
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-                 http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                 http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                  http://www.springframework.org/schema/security
-                 http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+                 http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-    <http auto-config="true" use-expressions="true" access-denied-page="/login">
+    <http auto-config="true" use-expressions="true">
         <intercept-url pattern="/shop/history" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/shop/product2" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/shop/basket" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/shop/admin" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/shop/admin/**" access="hasRole('ROLE_ADMIN')"/>
         <form-login login-page="/login" default-target-url="/shop/product" authentication-failure-url="/error403"/>
-        <logout logout-url="/logout" logout-success-url="/shop/product"/>
-        <!--<anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>-->
-        <!--<remember-me/>-->
+        <logout logout-success-url="/shop/product"/>
+        <csrf disabled="true"/>
     </http>
 
     <global-method-security secured-annotations="enabled"/>
@@ -25,14 +24,3 @@
     </authentication-manager>
 
 </beans:beans>
-
-
-        <!--<без БД>-->
-        <!--<authentication-manager>-->
-        <!--<authentication-provider>-->
-        <!--<user-service>-->
-        <!--<user name="admin" password="123" authorities="ROLE_ADMIN,ROLE_USER"/>-->
-        <!--<user name="user" password="123" authorities="ROLE_USER"/>-->
-        <!--</user-service>-->
-        <!--</authentication-provider>-->
-        <!--</authentication-manager>-->

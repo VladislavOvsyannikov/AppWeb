@@ -16,8 +16,12 @@ import system.service.ShopService;
 @RequestMapping("/shop")
 public class AdminController {
 
-    @Autowired
     private ShopService shopService;
+
+    @Autowired
+    public void setShopService(ShopService shopService) {
+        this.shopService = shopService;
+    }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public ModelAndView admin(){
@@ -47,7 +51,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/confirm", method = RequestMethod.GET)
     public ModelAndView confirm(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getBaskets());
+        modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm");
         return modelAndView;
@@ -57,7 +61,7 @@ public class AdminController {
     public @ResponseBody ModelAndView confirmBasket(@ModelAttribute("basket") Basket basket){
         shopService.adminConfirm(basket);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getBaskets());
+        modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm");
         return modelAndView;
@@ -67,7 +71,7 @@ public class AdminController {
     public @ResponseBody ModelAndView confirmBasket2(@ModelAttribute("basket") Basket basket){
         shopService.adminConfirm2(basket);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getBaskets());
+        modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm");
         return modelAndView;
@@ -76,7 +80,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/change", method = RequestMethod.GET)
     public ModelAndView change(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("prod", new Product());
         modelAndView.setViewName("admin_change");
         return modelAndView;
@@ -86,7 +90,7 @@ public class AdminController {
     public @ResponseBody ModelAndView changeProduct(@ModelAttribute("prod") Product product){
         shopService.changeProduct(product);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("prod", new Product());
         modelAndView.setViewName("admin_change");
         return modelAndView;
@@ -95,7 +99,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
     public ModelAndView users(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("users", shopService.getUsers());
+        modelAndView.addObject("users", shopService.getAll("User"));
         modelAndView.addObject("user", new User());
         modelAndView.setViewName("admin_users");
         return modelAndView;
@@ -105,7 +109,7 @@ public class AdminController {
     public @ResponseBody ModelAndView userDelete(@ModelAttribute("user") User user){
         shopService.deleteUser(user);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("users", shopService.getUsers());
+        modelAndView.addObject("users", shopService.getAll("User"));
         modelAndView.addObject("user", new User());
         modelAndView.setViewName("admin_users");
         return modelAndView;

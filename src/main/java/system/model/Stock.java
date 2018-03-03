@@ -1,6 +1,5 @@
 package system.model;
 
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -9,15 +8,11 @@ import java.util.List;
 public class Stock {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "address")
     private String address;
-
-    @OneToMany(mappedBy = "stock")
-    private List<Product> product;
 
     public int getId() {
         return id;
@@ -33,13 +28,5 @@ public class Stock {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public List<Product> getProduct() {
-        return product;
-    }
-
-    public void setProduct(List<Product> product) {
-        this.product = product;
     }
 }

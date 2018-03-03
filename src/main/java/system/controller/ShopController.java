@@ -15,15 +15,19 @@ import java.util.List;
 @RequestMapping("/shop")
 public class ShopController {
 
-    @Autowired
     private ShopService shopService;
+
+    @Autowired
+    public void setShopService(ShopService shopService) {
+        this.shopService = shopService;
+    }
 
 //    private List<Product> searchRes;
 
     @RequestMapping(value = "/product", method = RequestMethod.GET)
     public ModelAndView shopProduct(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("productFromServer", new Product());
         modelAndView.addObject("userName", shopService.getUserName());
         modelAndView.setViewName("shop_product_page");
@@ -89,7 +93,7 @@ public class ShopController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("searchFromServer", new Product());
         modelAndView.addObject("productFromServer", new Product());
-        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("res", new ArrayList<Product>());
         modelAndView.addObject("userName", shopService.getUserName());
         modelAndView.setViewName("shop_search_page");
@@ -102,7 +106,7 @@ public class ShopController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("searchFromServer", new Product());
         modelAndView.addObject("productFromServer", new Product());
-        modelAndView.addObject("types", shopService.getTypes());
+        modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("res", searchRes);
         modelAndView.addObject("userName", shopService.getUserName());
         modelAndView.setViewName("shop_search_page");

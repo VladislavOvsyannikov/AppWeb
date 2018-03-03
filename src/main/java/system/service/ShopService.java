@@ -1,7 +1,5 @@
 package system.service;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,41 +12,20 @@ import java.util.List;
 @Service
 public class ShopService {
 
-    @Autowired
-    private ProductDao productDao;
+    private GenericDao genericDao;
 
     @Autowired
-    private StockDao stockDao;
-
-    @Autowired
-    private TypeDao typeDao;
-
-    @Autowired
-    private BasketDao basketDao;
-
-    @Autowired
-    private ProductInOrderDao productInOrderDao;
-
-    @Autowired
-    private UserDao userDao;
+    public void setGenericDao(GenericDao genericDao) {
+        this.genericDao = genericDao;
+    }
 
     //    @Secured("ROLE_USER")
     public void addProductInOrder(Product product){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        query = session.createQuery("from Product where id=:n2");
-        query.setParameter("n2", product.getId());
-        Product product1 = (Product) query.list().get(0);
+        Product product1 = (Product) genericDao.getElement("from Product where id=:n", product.getId());
         product1.setQuantity(product1.getQuantity()-1);
+        genericDao.update(product1);
 
-        User user;
-        String userName = getUserName();
-        query = session.createQuery("from User where name=:n");
-        query.setParameter("n", userName);
-        user = (User) query.list().get(0);
-
+        User user = (User) genericDao.getElement("from User where name=:n", getUserName());
         List<Basket> baskets = user.getBasket();
         ProductInOrder productInOrder = new ProductInOrder();
         if (!baskets.isEmpty()) {
@@ -60,86 +37,62 @@ public class ShopService {
                 productInOrder.setBasket(basket);
                 productInOrder.setProduct(product1);
                 basket.setCost(basket.getCost() + product1.getPrice());
-                session.save(productInOrder);
+                genericDao.update(basket);
+                genericDao.save(productInOrder);
             } else {
                 Basket basket1 = new Basket();
                 basket1.setStatus("0");
                 basket1.setUser(user);
                 basket1.setCost(product1.getPrice());
-                session.save(basket1);
+                genericDao.save(basket1);
                 productInOrder.setBasket(basket1);
                 productInOrder.setProduct(product1);
-                session.save(productInOrder);
+                genericDao.save(productInOrder);
             }
         }
         if (baskets.isEmpty()) {
-            Basket basket1 = new Basket();
-            basket1.setStatus("0");
-            basket1.setUser(user);
-            basket1.setCost(product1.getPrice());
-            session.save(basket1);
-            productInOrder.setBasket(basket1);
+            Basket basket2 = new Basket();
+            basket2.setStatus("0");
+            basket2.setUser(user);
+            basket2.setCost(product1.getPrice());
+            genericDao.save(basket2);
+            productInOrder.setBasket(basket2);
             productInOrder.setProduct(product1);
-            session.save(productInOrder);
+            genericDao.save(productInOrder);
         }
-        session.getTransaction().commit();
-        session.close();
     }
 
     //    @Secured("ROLE_USER")
     public void deleteProductInOrder(ProductInOrder productInOrder){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-        query = session.createQuery("from ProductInOrder where id=:n");
-        query.setParameter("n", productInOrder.getId());
-        ProductInOrder productInOrder1 = (ProductInOrder) query.list().get(0);
-        productInOrder1.getProduct().setQuantity(productInOrder1.getProduct().getQuantity()+1);
-        productInOrder1.getBasket().setCost(productInOrder1.getBasket().getCost() -
-                productInOrder1.getProduct().getPrice());
+        ProductInOrder productInOrder1 = (ProductInOrder) genericDao.
+                getElement("from ProductInOrder where id=:n", productInOrder.getId());
+
+        Product product = productInOrder1.getProduct();
+        product.setQuantity(product.getQuantity()+1);
+        genericDao.update(product);
 
         Basket basket = productInOrder1.getBasket();
+        basket.setCost(basket.getCost() - product.getPrice());
         basket.getProductInOrder().remove(productInOrder1);
-
-        session.delete(productInOrder1);
-        session.getTransaction().commit();
-        session.close();
+        genericDao.update(basket);
+        genericDao.delete(productInOrder1);
     }
 
     //    @Secured("ROLE_USER")
     public void confirmBasket(){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
         Basket basket = getLastUserBasket();
-
-        query = session.createQuery("update Basket set status=:n1 where id=:n2");
-        query.setParameter("n1", "1");
-        query.setParameter("n2", basket.getId());
-        query.executeUpdate();
-
-        query = session.createQuery("update Basket set status2=:n3 where id=:n4");
-        query.setParameter("n3", "0");
-        query.setParameter("n4", basket.getId());
-        query.executeUpdate();
-
-        session.getTransaction().commit();
-        session.close();
+        basket.setStatus("1");
+        basket.setStatus2("0");
+        genericDao.update(basket);
     }
 
     public List<Product> searchProduct(Product product){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
         List<Product> products;
         if (!product.getType().getName().equals("-")){
-            query = session.createQuery("from Type where name=:n");
-            query.setParameter("n", product.getType().getName());
-            Type type = (Type) query.list().get(0);
+            Type type = (Type) genericDao.getElement("from Type where name=:n", product.getType().getName());
             products = type.getProduct();
         }else{
-            products = getProducts();
+            products = getAll("Product");
         }
 
         if (!product.getName().equals("")){
@@ -169,33 +122,18 @@ public class ShopService {
             }
         }
 
-        session.getTransaction().commit();
-        session.close();
         return products;
     }
 
 
     public boolean addUser(User user){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("from User where name=:n2");
-        query.setParameter("n2", user.getName());
-        List<User> users = query.list();
-        session.getTransaction().commit();
-        session.close();
-
+        List<User> users = genericDao.getList("from User where name=:n", user.getName());
         if (!user.getName().equals("") && !user.getPassword().equals("") && users.isEmpty()) {
-            session = HibernateSessionFactory.getSessionFactory().openSession();
-            session.beginTransaction();
-
             User user1 = new User();
             user1.setName(user.getName());
             user1.setPassword(user.getPassword());
             user1.setRole("ROLE_USER");
-            session.save(user1);
-
-            session.getTransaction().commit();
-            session.close();
+            genericDao.save(user1);
             return true;
         }
         return false;
@@ -209,30 +147,12 @@ public class ShopService {
     }
 
     public List<Basket> getUserBaskets(){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        User user;
-        String userName = getUserName();
-        query = session.createQuery("from User where name=:n");
-        query.setParameter("n", userName);
-        user = (User) query.list().get(0);
-
+        User user = (User) genericDao.getElement("from User where name=:n" , getUserName());
         return user.getBasket();
     }
 
     public Basket getLastUserBasket(){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        User user;
-        String userName = getUserName();
-        query = session.createQuery("from User where name=:n");
-        query.setParameter("n", userName);
-        user = (User) query.list().get(0);
-
+        User user = (User) genericDao.getElement("from User where name=:n", getUserName());
         List<Basket> baskets = user.getBasket();
         Basket basket=null;
         if (!baskets.isEmpty()) {
@@ -246,30 +166,22 @@ public class ShopService {
 
 
     public void addProduct(Product product) {
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
         Stock stock;
-        query = session.createQuery("from Stock where address=:addr");
-        query.setParameter("addr", product.getStock().getAddress());
-        List<Stock> stocks = query.list();
+        List<Stock> stocks = genericDao.getList("from Stock where address=:n", product.getStock().getAddress());
         if (stocks.isEmpty()) {
             stock = new Stock();
             stock.setAddress(product.getStock().getAddress());
-            session.save(stock);
+            genericDao.save(stock);
         } else {
             stock = stocks.get(0);
         }
 
         Type type;
-        query = session.createQuery("from Type where name=:name");
-        query.setParameter("name", product.getType().getName());
-        List<Type> types = query.list();
+        List<Type> types = genericDao.getList("from Type where name=:n", product.getType().getName());
         if (types.isEmpty()) {
             type = new Type();
             type.setName(product.getType().getName());
-            session.save(type);
+            genericDao.save(type);
         } else {
             type = types.get(0);
         }
@@ -280,28 +192,17 @@ public class ShopService {
         product1.setQuantity(product.getQuantity());
         product1.setStock(stock);
         product1.setType(type);
-        session.save(product1);
-
-        session.getTransaction().commit();
-        session.close();
+        genericDao.save(product1);
     }
 
     public void changeProduct(Product product){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        query = session.createQuery("from Product where id=:n");
-        query.setParameter("n", product.getId());
-        Product product1 = (Product) query.list().get(0);
+        Product product1 = (Product) genericDao.getElement("from Product where id=:n", product.getId());
         product1.setQuantity(product.getQuantity());
-
-        session.getTransaction().commit();
-        session.close();
+        genericDao.update(product1);
     }
 
     public int numberOfOrdersForConfirm(){
-        List<Basket> baskets = getBaskets();
+        List<Basket> baskets = getAll("Basket");
         int count=0;
         for (Basket b:baskets){
             if (b.getStatus2()!=null && b.getStatus2().equals("0")) count++;
@@ -310,76 +211,30 @@ public class ShopService {
     }
 
     public void adminConfirm(Basket basket){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
+        Basket basket1 = (Basket) genericDao.getElement("from Basket where id=:n", basket.getId());
+        basket1.setStatus2("1");
+        genericDao.update(basket1);
 
-        query = session.createQuery("update Basket set status2=:n1 where id=:n2");
-        query.setParameter("n1", "1");
-        query.setParameter("n2", basket.getId());
-        query.executeUpdate();
-
-        query = session.createQuery("from Basket where id=:n");
-        query.setParameter("n", basket.getId());
-        Basket basket1 = (Basket) query.list().get(0);
-        for (ProductInOrder p:basket1.getProductInOrder()){
-            p.getProduct().setQuantity(p.getProduct().getQuantity()+1);
+        for (ProductInOrder p : basket1.getProductInOrder()){
+            Product product = p.getProduct();
+            product.setQuantity(product.getQuantity()+1);
+            genericDao.update(product);
         }
-
-        session.getTransaction().commit();
-        session.close();
     }
 
     public void adminConfirm2(Basket basket){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        query = session.createQuery("update Basket set status2=:n1 where id=:n2");
-        query.setParameter("n1", "2");
-        query.setParameter("n2", basket.getId());
-        query.executeUpdate();
-
-        session.getTransaction().commit();
-        session.close();
+        Basket basket1 = (Basket) genericDao.getElement("from Basket where id=:n", basket.getId());
+        basket1.setStatus2("2");
+        genericDao.update(basket1);
     }
 
     public void deleteUser(User user){
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query;
-
-        query = session.createQuery("from User where id=:n");
-        query.setParameter("n", user.getId());
-        User user1 = (User) query.list().get(0);
-        session.delete(user1);
-
-        session.getTransaction().commit();
-        session.close();
+        User user1 = (User) genericDao.getElement("from User where id=:n", user.getId());
+        genericDao.delete(user1);
     }
 
 
-    public List getProducts(){
-        return productDao.getProducts();
-    }
-
-    public List getStocks(){
-        return stockDao.getStocks();
-    }
-
-    public List getTypes(){
-        return typeDao.getTypes();
-    }
-
-    public List getBaskets(){
-        return basketDao.getBaskets();
-    }
-
-    public List getProductsInOrders(){
-        return productInOrderDao.getProductsInOrders();
-    }
-
-    public List getUsers(){
-        return userDao.getUsers();
+    public List getAll(String s){
+        return genericDao.getAll(s);
     }
 }

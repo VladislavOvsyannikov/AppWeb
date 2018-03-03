@@ -3,14 +3,12 @@ package system.model;
 import javax.persistence.*;
 import java.util.List;
 
-
 @Entity
 @Table(name = "basket", schema = "shop2")
 public class Basket {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "status")

@@ -10,13 +10,16 @@
 <h3>Навигация: </h3>
 <a href="http://localhost:8080/shop/product">Главная</a>&emsp;&emsp;
 <h3>Авторизация:</h3>
-<form method="post" action="/j_spring_security_check" role="form">
+<form method="post" action="<c:url value='login'/>">
     Имя пользователя: <br>
-    <input type="text" name="j_username"/> <br>
+    <input type="text" name="username"/> <br>
     Пароль: <br>
-    <input type="password" name="j_password"/> <br><br>
-    <%--<input type="checkbox" name="j_spring_security_remember_me"/>--%>
+    <input type="password" name="password"/> <br><br>
+
     <input type="submit" value="Вход"/>
+
+    <%--<input type="hidden" name="<c:out value="${_csrf.parameterName}"/>"--%>
+           <%--value="<c:out value="${_csrf.token}"/>"/>--%>
 </form>
 <br><a href="http://localhost:8080/registration">Регистрация</a>
 

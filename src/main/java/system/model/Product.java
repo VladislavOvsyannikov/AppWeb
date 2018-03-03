@@ -8,8 +8,7 @@ import java.util.List;
 public class Product {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "name")
@@ -28,9 +27,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)
     private Type type;
-
-    @OneToMany(mappedBy = "product")
-    private List<ProductInOrder> productInOrder;
 
     public int getId() {
         return id;
@@ -78,13 +74,5 @@ public class Product {
 
     public void setType(Type type) {
         this.type = type;
-    }
-
-    public List<ProductInOrder> getProductInOrder() {
-        return productInOrder;
-    }
-
-    public void setProductInOrder(List<ProductInOrder> productInOrder) {
-        this.productInOrder = productInOrder;
     }
 }

@@ -1,6 +1,9 @@
 package system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +16,15 @@ import system.service.ShopService;
 @Controller
 public class AuthController {
 
-    @Autowired
     private ShopService shopService;
 
+    @Autowired
+    public void setShopService(ShopService shopService) {
+        this.shopService = shopService;
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView shopProduct(){
+    public ModelAndView shopLogin(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;

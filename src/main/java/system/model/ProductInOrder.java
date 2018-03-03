@@ -2,14 +2,12 @@ package system.model;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "productInOrder", schema = "shop2")
 public class ProductInOrder {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @ManyToOne

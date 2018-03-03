@@ -8,8 +8,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "name", nullable = false)

@@ -20,12 +20,12 @@
 <p></c:if>
 <c:if test="${userName!='Гость' && userName!='admin'}"><p>
     Вы вошли как <c>${userName}</c>.&emsp;&emsp;
-    <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
+    <a href="<c:url value="/logout" />">Выход</a>&emsp;&emsp;
     <a href="http://localhost:8080/shop/history">История заказов</a>
 <p></c:if>
 <c:if test="${userName=='admin'}"><p>
     Вы вошли как <c>${userName}</c>.&emsp;&emsp;
-    <a href="http://localhost:8080/logout">Выход</a>&emsp;&emsp;
+    <a href="<c:url value="/logout" />">Выход</a>&emsp;&emsp;
     <a href="http://localhost:8080/shop/history">История заказов</a>&emsp;&emsp;
     <a href="http://localhost:8080/shop/admin">Администрирование</a>
 <p></c:if>
