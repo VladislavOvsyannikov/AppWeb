@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" ng-controller="appController">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+    <link rel="stylesheet" href="/resources/css/bootstrap2.css">
+    <link rel="stylesheet" href="/resources/css/bootstrap-responsive.css">
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+        #popUpMsg-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        #popUpMsg {
+            top: 10%;
+            left: 50%;
+            margin-left: -150px;
+            width: 300px;
+            padding: 10px 5px;
+            background: white;
+            border-radius: 5px;
+            position: absolute;
+        }
+
+        #popUpMsg .close {
+            background: black;
+            color: white;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            top: -2px;
+            right: -2px;
+        }
+
+        #popUpMsg .content {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #popUpMsg button {
+            display: block;
+            margin: 0 auto;
+            border-radius: 3px;
+            border: 0;
+            background: lightgray;
+            padding: 5px 20px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="/resources/js/angular.min.js"></script>
+    <script src="/resources/js/ang.js"></script>
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="brand">Интернет-магазин товаров для животных</a>
+            <div class="nav-collapse collapse" ng-init="getUsername()">
+
+                <div class="pull-right" ng-if="username == 'Гость'">
+                    <ul class="nav">
+                        <li><a href="http://localhost:8080/login">Вход</a></li>
+                        <li><a href="http://localhost:8080/registration">Регистрация</a></li>
+                        <li><a href="#">Вы вошли как {{username}}</a></li>
+                    </ul>
+                </div>
+
+                <div class="pull-right" ng-if="username == 'admin'">
+                    <ul class="nav">
+                        <li><a href="/logout">Выход</a></li>
+                        <li><a href="http://localhost:8080/shop/admin">Администрирование</a></li>
+                        <li><a href="#">Вы вошли как {{username}}</a></li>
+                    </ul>
+                </div>
+
+                <div class="pull-right" ng-if="username != 'Гость' && username != 'admin'">
+                    <ul class="nav">
+                        <li><a href="/logout">Выход</a></li>
+                        <li><a href="http://localhost:8080/shop/basket">Корзина</a></li>
+                        <li><a href="#">Вы вошли как {{username}}</a></li>
+                    </ul>
+                </div>
+
+                <ul class="nav">
+                    <li><a href="http://localhost:8080/shop/product">Главная</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <div ng-init="getUsername()" ng-if="username != 'Гость' && username != 'admin'">
+                    <ul class="nav nav-list">
+                        <li class="nav-header">Навигация по сайту:</li>
+                        <li><a href="http://localhost:8080/shop/search">Поиск товара</a></li>
+                        <li><a href="http://localhost:8080/shop/basket">Корзина</a></li>
+                        <li><a href="http://localhost:8080/shop/history">История заказов</a></li>
+                    </ul>
+                </div>
+                <div ng-init="getUsername()" ng-if="username == 'Гость' || username == 'admin'">
+                    <ul class="nav nav-list">
+                        <li class="nav-header">Навигация по сайту:</li>
+                        <li><a href="http://localhost:8080/shop/search">Поиск товара</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="span9" ng-init="getUsername()">
+            <div ng-controller="postController" ng-init="searchProduct()">
+                <div class="hero-unit">
+                    <h2>Поиск товара по параметрам:</h2>
+                    <form name="post" ng-submit="searchProduct()">
+                        <h4>Выберите тип товара:</h4>
+                        <label>
+                            <select name="select" ng-model="typename" ng-init="getTypes()" style="width: 20%">
+                                <option ng-repeat="type in types" value="{{type.name}}">{{type.name}}</option>
+                                <option value="-">Любой</option>
+                            </select>
+                        </label>
+                        <input type="text" name="name" class="input-block-level" placeholder="Название" ng-model="name"
+                               style="width: 20%"> <br>
+                        <input type="text" name="price" class="input-block-level" placeholder="Цена (<=)"
+                               ng-model="price" style="width: 20%"><br>
+                        <input type="text" name="quantity" class="input-block-level" placeholder="Количество (>=)"
+                               ng-model="quantity" style="width:20%"><br>
+                        <button type="submit" class="btn btn-large btn-primary">Поиск</button>
+                    </form>
+                    <div ng-if="res != '1'">
+                        <div ng-if="res == ''">
+                            <h2>Товары не найдены</h2>
+                        </div>
+                        <div ng-if="res != ''">
+                            <h2>Найденные товары:</h2>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Цена</th>
+                                    <th>Количество</th>
+                                    <th>Тип товара</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="product in res">
+                                    <td>{{product.name}}</td>
+                                    <td>{{product.price}}</td>
+                                    <td>{{product.quantity}}</td>
+                                    <td>{{product.type.name}}</td>
+                                    <td>
+                                        <div ng-if="product.quantity!='0' && username != 'Гость' && username != 'admin' "
+                                            ng-controller="postController">
+                                            <form name="post" ng-submit="addProduct()">
+                                                <button type="submit" ng-click="setId(product.id)"
+                                                        class="btn btn-small btn-warning">В корзину
+                                                </button>
+                                            </form>
+                                            <pop-up-msg></pop-up-msg>
+                                        </div>
+
+                                        <div ng-if="product.quantity!='0' && (username=='Гость' || username=='admin')"
+                                             ng-controller="postController">
+                                            <form name="post" ng-submit="openPopUp('Необходимо авторизоваться')">
+                                                <button type="submit" class="btn btn-small btn-warning">В корзину</button>
+                                            </form>
+                                            <pop-up-msg></pop-up-msg>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title1</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+
+    <script src="/resources/js/angular.min.js"></script>
+    <script src="/resources/js/ang.js"></script>
+
+</head>
+
+<body>
+html page!
+<div class="container" ng-app="app">
+    <div ng-controller="appController" ng-init="getTypes()">
+        <h3>All Types</h3>
+        <ul class="list-group">
+            <li ng-repeat="type in types">
+                <h4 class="list-group-item">
+                    Id: {{type.id}} <br>
+                    Name: {{type.name}} <br>
+                    <ul class="list-group">
+                        <li ng-repeat="prod in type.product">
+                            <h4 class="list-group-item">
+                                Id: {{prod.id}} <br>
+                                Name: {{prod.name}}
+                            </h4>
+                        </li>
+                    </ul>
+                </h4>
+            </li>
+        </ul>
+        <p>{{getResultMessage}}</p>
+    </div>
+
+    <div ng-controller="appController" ng-init="getData()">
+        <h3>JsonData</h3>
+        <table class="table">
+            <tr>
+                <th>Name
+                </th>
+                <th>Address
+                </th>
+                <th>City
+                </th>
+                <th>Phone
+                </th>
+            </tr>
+            <tr ng-repeat="profile in profiles">
+                <td>{{profile.firstname + " " + profile.lastname}}
+                </td>
+                <td>{{profile.address}}
+                </td>
+                <td>{{profile.city}}
+                </td>
+                <td>{{profile.phone}}
+                </td>
+            </tr>
+        </table>
+        <p>{{getResultMessage}}</p>
+    </div>
+</div>
+
+</body>
+</html>

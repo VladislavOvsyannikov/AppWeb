@@ -27,7 +27,7 @@ public class AdminController {
     public ModelAndView admin(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("number", shopService.numberOfOrdersForConfirm());
-        modelAndView.setViewName("admin");
+        modelAndView.setViewName("admin.jsp");
         return modelAndView;
     }
 
@@ -35,7 +35,7 @@ public class AdminController {
     public ModelAndView add(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("admin_add");
+        modelAndView.setViewName("admin_add.jsp");
         return modelAndView;
     }
 
@@ -44,7 +44,7 @@ public class AdminController {
         shopService.addProduct(product);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("admin_add");
+        modelAndView.setViewName("admin_add.jsp");
         return modelAndView;
     }
 
@@ -53,7 +53,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
-        modelAndView.setViewName("admin_confirm");
+        modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
     }
 
@@ -63,7 +63,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
-        modelAndView.setViewName("admin_confirm");
+        modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
     }
 
@@ -73,7 +73,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("baskets", shopService.getAll("Basket"));
         modelAndView.addObject("basket", new Basket());
-        modelAndView.setViewName("admin_confirm");
+        modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
     }
 
@@ -82,7 +82,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("prod", new Product());
-        modelAndView.setViewName("admin_change");
+        modelAndView.setViewName("admin_change.jsp");
         return modelAndView;
     }
 
@@ -92,7 +92,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("types", shopService.getAll("Type"));
         modelAndView.addObject("prod", new Product());
-        modelAndView.setViewName("admin_change");
+        modelAndView.setViewName("admin_change.jsp");
         return modelAndView;
     }
 
@@ -101,7 +101,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("users", shopService.getAll("User"));
         modelAndView.addObject("user", new User());
-        modelAndView.setViewName("admin_users");
+        modelAndView.setViewName("admin_users.jsp");
         return modelAndView;
     }
 
@@ -111,7 +111,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("users", shopService.getAll("User"));
         modelAndView.addObject("user", new User());
-        modelAndView.setViewName("admin_users");
+        modelAndView.setViewName("admin_users.jsp");
         return modelAndView;
     }
 }

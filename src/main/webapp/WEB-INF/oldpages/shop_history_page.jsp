@@ -25,7 +25,6 @@
 <h3>История заказов: </h3>
 <script>
     var show;
-
     function hidetxt(type) {
         param = document.getElementById(type);
         if (param.style.display == "none") {

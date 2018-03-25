@@ -1,3 +1,1 @@
-'.idea'
-'target'
-'AppWeb.iml'
+'.idea', 'target', 'AppWeb.iml', 'src\main\webapp\WEB-INF\oldpages'

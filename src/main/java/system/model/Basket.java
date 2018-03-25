@@ -1,11 +1,14 @@
 package system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "basket", schema = "shop2")
-public class Basket {
+public class Basket implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -24,6 +27,7 @@ public class Basket {
     private List<ProductInOrder> productInOrder;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 

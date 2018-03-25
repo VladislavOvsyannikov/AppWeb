@@ -9,14 +9,16 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
-
+    <mvc:default-servlet-handler/>
     <mvc:annotation-driven/>
     <context:component-scan base-package="system"/>
-    <mvc:view-controller path="/" view-name="start_page"/>
+    <!--<mvc:view-controller path="/" view-name="start_page"/>-->
+    <!--<mvc:resources mapping="/static/**" location="/static/" />-->
+    <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
 
     <bean id="resolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="suffix" value=""/>
     </bean>
 
 </beans>
