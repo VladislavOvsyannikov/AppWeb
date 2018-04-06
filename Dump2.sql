@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `basket`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `basket` (
   `id` int(11) NOT NULL,
-  `status` varchar(255) DEFAULT NULL,
+  `userConfirmStatus` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `status2` varchar(255) DEFAULT NULL,
+  `adminConfirmStatus` varchar(255) DEFAULT NULL,
   `cost` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKfp7yinn3dh4sy1ia364xp3d9g` (`user_id`),
@@ -40,8 +40,36 @@ CREATE TABLE `basket` (
 
 LOCK TABLES `basket` WRITE;
 /*!40000 ALTER TABLE `basket` DISABLE KEYS */;
-INSERT INTO `basket` VALUES (73,'1',72,'2','280'),(76,'1',72,'1','730'),(123,'1',72,'1','1200'),(128,'1',127,'2','720'),(132,'1',127,'2','990'),(136,'1',127,'1','735'),(139,'1',127,'2','245'),(142,'1',127,'1','360'),(146,'1',72,'0','1240'),(150,'1',127,'0','360'),(154,'0',72,NULL,'270'),(159,'0',127,NULL,'670');
+INSERT INTO `basket` VALUES (247,'1',246,'1','140'),(248,'0',246,NULL,'290');
 /*!40000 ALTER TABLE `basket` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `basket_product_link`
+--
+
+DROP TABLE IF EXISTS `basket_product_link`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `basket_product_link` (
+  `basketId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  PRIMARY KEY (`basketId`,`productId`),
+  KEY `FKlp62k222192flpprpxhm2r8pv` (`productId`),
+  CONSTRAINT `FKhqq5c73pullf1dvgrlu3v440q` FOREIGN KEY (`basketId`) REFERENCES `basket` (`id`),
+  CONSTRAINT `FKlp62k222192flpprpxhm2r8pv` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `basket_product_link`
+--
+
+LOCK TABLES `basket_product_link` WRITE;
+/*!40000 ALTER TABLE `basket_product_link` DISABLE KEYS */;
+INSERT INTO `basket_product_link` VALUES (247,3,0),(247,4,1),(247,7,0),(248,7,2),(248,8,1),(248,11,0);
+/*!40000 ALTER TABLE `basket_product_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -62,7 +90,7 @@ CREATE TABLE `hibernate_sequence` (
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (162),(162),(162),(162),(162);
+INSERT INTO `hibernate_sequence` VALUES (249),(249),(249),(249),(249);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +105,6 @@ CREATE TABLE `product` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `price` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
   `stock_id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -94,37 +121,38 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (3,'Мяч',130,78,1,2),(4,'Косточка',140,98,1,2),(7,'Ошейник',100,118,5,6),(8,'Клубок',90,59,1,2),(9,'Комбинезон',1200,4,5,6),(11,'Таблетки',180,61,1,10),(13,'Корм',720,43,5,12),(15,'Шампунь',270,67,1,14),(16,'Консервы',240,8,5,12),(17,'Пелёнки',245,119,1,14),(18,'Капли',490,20,1,10),(19,'Расчёска',270,23,5,14),(20,'Витамины',730,2,1,10),(21,'Антибиотики',1100,5,1,10),(22,'Ботинки',900,12,1,6),(97,'Пищевые добавки',280,164,1,12);
+INSERT INTO `product` VALUES (3,'Мяч',130,1,2),(4,'Косточка',140,1,2),(7,'Ошейник',100,5,6),(8,'Клубок',90,1,2),(9,'Комбинезон',1200,5,6),(11,'Таблетки',180,1,10),(13,'Корм',720,5,12),(15,'Шампунь',270,1,14),(16,'Консервы',240,5,12),(17,'Пелёнки',245,1,14),(18,'Капли',490,1,10),(19,'Расчёска',270,5,14),(20,'Витамины',730,1,10),(21,'Антибиотики',1100,1,10),(22,'Ботинки',900,1,6),(97,'Пищевые добавки',280,1,12);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `productinorder`
+-- Table structure for table `product_stock_link`
 --
 
-DROP TABLE IF EXISTS `productinorder`;
+DROP TABLE IF EXISTS `product_stock_link`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `productinorder` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKe6lxiw9ctlrp55pcmh0t40l3f` (`order_id`),
-  KEY `FKqdmiuuu1witp1s0fambgha8e4` (`product_id`),
-  CONSTRAINT `FKe6lxiw9ctlrp55pcmh0t40l3f` FOREIGN KEY (`order_id`) REFERENCES `basket` (`id`),
-  CONSTRAINT `FKqdmiuuu1witp1s0fambgha8e4` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
+CREATE TABLE `product_stock_link` (
+  `productId` int(11) NOT NULL,
+  `stockId` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  PRIMARY KEY (`productId`,`stockId`),
+  KEY `FKegvr3coamp9vkc9t5dvn7w5ep` (`stockId`),
+  CONSTRAINT `FK59o372nnr7566tokkq0gup58b` FOREIGN KEY (`stockId`) REFERENCES `stock` (`id`),
+  CONSTRAINT `FKaesek7d7u7hifk2e0khukmxq4` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  CONSTRAINT `FKegvr3coamp9vkc9t5dvn7w5ep` FOREIGN KEY (`stockId`) REFERENCES `stock` (`id`),
+  CONSTRAINT `FKmfmajvgdrhwt418bkm5737shy` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `productinorder`
+-- Dumping data for table `product_stock_link`
 --
 
-LOCK TABLES `productinorder` WRITE;
-/*!40000 ALTER TABLE `productinorder` DISABLE KEYS */;
-INSERT INTO `productinorder` VALUES (74,73,11),(75,73,7),(108,76,18),(116,76,16),(124,123,9),(131,128,13),(133,132,13),(135,132,19),(137,136,18),(138,136,17),(141,139,17),(143,142,3),(144,142,4),(145,142,8),(147,146,97),(148,146,13),(149,146,16),(151,150,4),(152,150,3),(153,150,8),(155,154,4),(158,154,3),(160,159,11),(161,159,18);
-/*!40000 ALTER TABLE `productinorder` ENABLE KEYS */;
+LOCK TABLES `product_stock_link` WRITE;
+/*!40000 ALTER TABLE `product_stock_link` DISABLE KEYS */;
+INSERT INTO `product_stock_link` VALUES (3,1,74),(4,1,99),(7,5,116),(8,1,58),(9,5,4),(11,1,62),(13,5,42),(15,1,67),(16,5,8),(17,1,117),(18,1,20),(19,5,26),(20,1,6),(21,1,5),(22,1,20),(97,1,159),(97,5,79);
+/*!40000 ALTER TABLE `product_stock_link` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -197,7 +225,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (0,'guest','123','ROLE_ANONYMOUS'),(2,'admin','123','ROLE_ADMIN'),(72,'Сергей','123','ROLE_USER'),(127,'Настя','1','ROLE_USER');
+INSERT INTO `user` VALUES (2,'admin','123','ROLE_ADMIN'),(246,'Настя','1','ROLE_USER');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -210,4 +238,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-26 13:31:27
+-- Dump completed on 2018-04-06 22:10:51

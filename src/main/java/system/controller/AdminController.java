@@ -31,27 +31,10 @@ public class AdminController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/admin/add", method = RequestMethod.GET)
-    public ModelAndView add(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("admin_add.jsp");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/admin/add", method = RequestMethod.POST)
-    public @ResponseBody ModelAndView addProduct(@ModelAttribute("product") Product product){
-        shopService.addProduct(product);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("product", new Product());
-        modelAndView.setViewName("admin_add.jsp");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/admin/confirm", method = RequestMethod.GET)
     public ModelAndView confirm(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getAll("Basket"));
+        modelAndView.addObject("baskets", shopService.getAllBaskets());
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
@@ -61,7 +44,7 @@ public class AdminController {
     public @ResponseBody ModelAndView confirmBasket(@ModelAttribute("basket") Basket basket){
         shopService.adminConfirm(basket);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getAll("Basket"));
+        modelAndView.addObject("baskets", shopService.getAllBaskets());
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
@@ -71,7 +54,7 @@ public class AdminController {
     public @ResponseBody ModelAndView confirmBasket2(@ModelAttribute("basket") Basket basket){
         shopService.adminConfirm2(basket);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("baskets", shopService.getAll("Basket"));
+        modelAndView.addObject("baskets", shopService.getAllBaskets());
         modelAndView.addObject("basket", new Basket());
         modelAndView.setViewName("admin_confirm.jsp");
         return modelAndView;
@@ -80,7 +63,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/change", method = RequestMethod.GET)
     public ModelAndView change(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("types", shopService.getAll("Type"));
+        modelAndView.addObject("types", shopService.getAllTypes());
         modelAndView.addObject("prod", new Product());
         modelAndView.setViewName("admin_change.jsp");
         return modelAndView;
@@ -90,7 +73,7 @@ public class AdminController {
     public @ResponseBody ModelAndView changeProduct(@ModelAttribute("prod") Product product){
         shopService.changeProduct(product);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("types", shopService.getAll("Type"));
+        modelAndView.addObject("types", shopService.getAllTypes());
         modelAndView.addObject("prod", new Product());
         modelAndView.setViewName("admin_change.jsp");
         return modelAndView;
@@ -99,7 +82,7 @@ public class AdminController {
     @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
     public ModelAndView users(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("users", shopService.getAll("User"));
+        modelAndView.addObject("users", shopService.getAllUsers());
         modelAndView.addObject("user", new User());
         modelAndView.setViewName("admin_users.jsp");
         return modelAndView;
@@ -109,7 +92,7 @@ public class AdminController {
     public @ResponseBody ModelAndView userDelete(@ModelAttribute("user") User user){
         shopService.deleteUser(user);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("users", shopService.getAll("User"));
+        modelAndView.addObject("users", shopService.getAllUsers());
         modelAndView.addObject("user", new User());
         modelAndView.setViewName("admin_users.jsp");
         return modelAndView;

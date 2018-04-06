@@ -101,7 +101,6 @@
                 <div class="pull-right" ng-if="username != 'Гость' && username != 'admin'">
                     <ul class="nav">
                         <li><a href="/logout">Выход</a></li>
-                        <li><a href="http://localhost:8080/shop/basket">Корзина</a></li>
                         <li><a href="#">Вы вошли как {{username}}</a></li>
                     </ul>
                 </div>
@@ -172,13 +171,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="product in res">
+                                <tr ng-repeat="product in res" ng-if="getQuantity(product.productStockLinks) != 0">
                                     <td>{{product.name}}</td>
                                     <td>{{product.price}}</td>
-                                    <td>{{product.quantity}}</td>
+                                    <td>{{getQuantity(product.productStockLinks)}}</td>
                                     <td>{{product.type.name}}</td>
                                     <td>
-                                        <div ng-if="product.quantity!='0' && username != 'Гость' && username != 'admin' "
+                                        <div ng-if="username != 'Гость' && username != 'admin' "
                                             ng-controller="postController">
                                             <form name="post" ng-submit="addProduct()">
                                                 <button type="submit" ng-click="setId(product.id)"
@@ -188,7 +187,7 @@
                                             <pop-up-msg></pop-up-msg>
                                         </div>
 
-                                        <div ng-if="product.quantity!='0' && (username=='Гость' || username=='admin')"
+                                        <div ng-if="username=='Гость' || username=='admin'"
                                              ng-controller="postController">
                                             <form name="post" ng-submit="openPopUp('Необходимо авторизоваться')">
                                                 <button type="submit" class="btn btn-small btn-warning">В корзину</button>

@@ -17,15 +17,23 @@ app.controller('appController', function ($scope, $http) {
     $scope.getProducts = function () {
         var url = "getProducts";
         $http.get(url, config).then(function (response) {
-            $scope.propertyName = 'id';
-            $scope.reverse = true;
             $scope.products = response.data;
-
-            $scope.sortBy = function (propertyName) {
-                $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-                $scope.propertyName = propertyName;
-            };
         });
+    };
+
+    $scope.getQuantity = function(productStockLinks) {
+        var sum = 0;
+        for (i=0; i<productStockLinks.length; i++){
+            sum+=productStockLinks[i].quantity;
+        }
+        return sum;
+    };
+
+    $scope.isEmptyBasket = function (basketProductLinks) {
+        for (i=0; i<basketProductLinks.length; i++){
+            if (basketProductLinks[i].quantity>0) return false;
+        }
+        return true;
     };
 
     $scope.getUsername = function () {
@@ -73,12 +81,14 @@ app.controller('postController', function ($scope, $http, $location, $window) {
         var url = "searchProduct";
         var data = {
             name: $scope.name,
-            price: $scope.price,
-            quantity: $scope.quantity
+            price: $scope.price
         };
+        var q=0;
+        if ($scope.quantity!=null && $scope.quantity!=="") q=$scope.quantity;
         var config = {
             headers: {'Content-Type': 'application/json;charset=utf-8;'},
-            params: {'typename': $scope.typename}
+            params: {'typename': $scope.typename,
+                    'quantity': q }
         };
         $http.post(url, data, config).then(function (response) {
             $scope.res = response.data;

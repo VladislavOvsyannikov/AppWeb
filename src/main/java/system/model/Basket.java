@@ -14,17 +14,17 @@ public class Basket implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "userConfirmStatus")
+    private String userConfirmStatus;
 
-    @Column(name = "status2")
-    private String status2;
+    @Column(name = "adminConfirmStatus")
+    private String adminConfirmStatus;
 
     @Column(name = "cost", nullable = false)
     private int cost;
 
     @OneToMany(mappedBy = "basket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<ProductInOrder> productInOrder;
+    private List<BasketProductLink> basketProductLinks;
 
     @ManyToOne
     @JsonIgnore
@@ -47,20 +47,20 @@ public class Basket implements Serializable {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUserConfirmStatus() {
+        return userConfirmStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserConfirmStatus(String status) {
+        this.userConfirmStatus = status;
     }
 
-    public String getStatus2() {
-        return status2;
+    public String getAdminConfirmStatus() {
+        return adminConfirmStatus;
     }
 
-    public void setStatus2(String status2) {
-        this.status2 = status2;
+    public void setAdminConfirmStatus(String status2) {
+        this.adminConfirmStatus = status2;
     }
 
     public int getCost() {
@@ -71,11 +71,11 @@ public class Basket implements Serializable {
         this.cost = cost;
     }
 
-    public List<ProductInOrder> getProductInOrder() {
-        return productInOrder;
+    public List<BasketProductLink> getBasketProductLinks() {
+        return basketProductLinks;
     }
 
-    public void setProductInOrder(List<ProductInOrder> productInOrder) {
-        this.productInOrder = productInOrder;
+    public void setBasketProductLinks(List<BasketProductLink> basketProductLinks) {
+        this.basketProductLinks = basketProductLinks;
     }
 }

@@ -1,7 +1,6 @@
 package system.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,12 +20,8 @@ public class Product implements Serializable {
     @Column(name = "price")
     private int price;
 
-    @Column(name = "quantity")
-    private int quantity;
-
-    @ManyToOne
-    @JoinColumn(name = "stock_id", nullable = false)
-    private Stock stock;
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<ProductStockLink> productStockLinks;
 
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)
@@ -56,27 +51,19 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Stock getStock() {
-        return stock;
-    }
-
-    public void setStock(Stock stock) {
-        this.stock = stock;
-    }
-
     public Type getType() {
         return type;
     }
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public List<ProductStockLink> getProductStockLinks() {
+        return productStockLinks;
+    }
+
+    public void setProductStockLinks(List<ProductStockLink> productStockLinks) {
+        this.productStockLinks = productStockLinks;
     }
 }

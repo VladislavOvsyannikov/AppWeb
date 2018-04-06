@@ -45,15 +45,13 @@
             <table>
                 <tr>
                     <th>&ensp;Название&ensp;</th>
-                    <%--<th>&ensp;Цена&ensp;</th>--%>
-                    <th>&ensp;Количество</th>
+                    <th>&ensp;Цена&ensp;</th>
                 </tr>
                 <c:forEach items="${type.product}" var="product">
                     <tr>
                         <spring:form modelAttribute="prod" method="post" action="/shop/admin/change">
-                            <td>${product.name}</td>
-                            <%--<td><spring:input path="price" value="${product.price}"/></td>--%>
-                            <td><spring:input path="quantity" value="${product.quantity}"/></td>
+                            <td><spring:input path="name" value="${product.name}"/></td>
+                            <td>${product.price}</td>
                             <td>
                                 <spring:hidden path="id" value="${product.id}"/>
                                 <spring:button>Изменить</spring:button>

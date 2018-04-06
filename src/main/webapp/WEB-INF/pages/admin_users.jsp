@@ -22,7 +22,7 @@
     <c:if test="${us.role=='ROLE_USER'}">
     <c>${us.name}</c>&emsp;&emsp;
     <spring:form modelAttribute="user" method="post" action="/shop/admin/users">
-        <spring:hidden path="id" value="${us.id}"/>
+        <spring:hidden path="name" value="${us.name}"/>
         <spring:button>Удалить</spring:button>
     </spring:form>
     <br><br>

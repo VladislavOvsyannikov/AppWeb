@@ -18,8 +18,9 @@
     <mapping class="system.model.Type"/>
     <mapping class="system.model.Stock"/>
     <mapping class="system.model.Basket"/>
-    <mapping class="system.model.ProductInOrder"/>
     <mapping class="system.model.User"/>
+    <mapping class="system.model.ProductStockLink"/>
+    <mapping class="system.model.BasketProductLink"/>
 
   </session-factory>
 </hibernate-configuration>

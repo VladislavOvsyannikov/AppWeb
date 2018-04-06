@@ -55,13 +55,17 @@
                 <th>&ensp;Название&ensp;</th>
                 <th>&ensp;Цена&ensp;</th>
                 <th>&ensp;Тип</th>
+                <th>&ensp;Количество</th>
             </tr>
-            <c:forEach items="${bask.productInOrder}" var="productInOrder">
+            <c:forEach items="${bask.basketProductLinks}" var="basketProductLink">
+                <c:if test="${basketProductLink.quantity!=0}">
                 <tr>
-                    <td>${productInOrder.product.name}</td>
-                    <td>${productInOrder.product.price}</td>
-                    <td>${productInOrder.product.type.name}</td>
+                    <td>${basketProductLink.product.name}</td>
+                    <td>${basketProductLink.product.price}</td>
+                    <td>${basketProductLink.product.type.name}</td>
+                    <td>${basketProductLink.quantity}</td>
                 </tr>
+                </c:if>
             </c:forEach>
         </table>
         Общая стоимость: ${bask.cost}<br>

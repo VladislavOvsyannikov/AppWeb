@@ -53,7 +53,6 @@
                 <div class="pull-right" ng-if="username != 'Гость' && username != 'admin'">
                     <ul class="nav">
                         <li><a href="/logout">Выход</a></li>
-                        <li><a href="http://localhost:8080/shop/basket">Корзина</a></li>
                         <li><a href="#">Вы вошли как {{username}}</a></li>
                     </ul>
                 </div>
@@ -90,11 +89,11 @@
 
         <div class="span9">
             <div class="hero-unit" ng-init="getLastUserBasket()">
-                <div ng-if="basket=='' || basket.status==1">
+                <div ng-if="basket=='' || isEmptyBasket(basket.basketProductLinks)==true || basket.userConfirmStatus==1">
                     <h2>Нет товаров в корзине</h2>
                 </div>
 
-                <div ng-if="basket!='' && basket.status!=1">
+                <div ng-if="basket!='' && isEmptyBasket(basket.basketProductLinks)==false && basket.userConfirmStatus!=1">
                 <h2>Корзина:</h2>
                 <table class="table">
                     <thead>
@@ -102,17 +101,20 @@
                         <th>Название</th>
                         <th>Цена</th>
                         <th>Тип товара</th>
+                        <th>Количество</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="productInOrder in basket.productInOrder">
-                        <td>{{productInOrder.product.name}}</td>
-                        <td>{{productInOrder.product.price}}</td>
-                        <td>{{productInOrder.product.type.name}}</td>
+                    <tr ng-repeat="basketProductLink in basket.basketProductLinks"
+                        ng-if="basketProductLink.quantity!=0">
+                        <td>{{basketProductLink.product.name}}</td>
+                        <td>{{basketProductLink.product.price}}</td>
+                        <td>{{basketProductLink.product.type.name}}</td>
+                        <td>{{basketProductLink.quantity}}</td>
                         <td>
                             <div ng-controller="postController">
                                 <form name="post" ng-submit="deleteProduct()">
-                                    <button type="submit" ng-click="setId(productInOrder.id)"
+                                    <button type="submit" ng-click="setId(basketProductLink.product.id)"
                                             class="btn btn-small btn-warning">Удалить из корзины
                                     </button>
                                 </form>
